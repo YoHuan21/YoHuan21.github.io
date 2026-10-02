@@ -1,0 +1,676 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Design tokens ───────────────────────── */
+:root {
+  --bg: #05070d; /* page background: near-black with a navy tint */
+  --navy-900: #0a1128; /* elevated sections */
+  --navy-800: #0f1b3d; /* cards, panels */
+  --border: rgba(148, 163, 184, 0.12); /* 1px hairlines */
+  --border-strong: rgba(148, 163, 184, 0.2);
+  --accent: #3b82f6; /* electric blue, used sparingly */
+  --accent-soft: #93c5fd; /* ice-blue highlights, hover text */
+  --text: #e8ecf4; /* soft white, never pure white */
+  --muted: #8b94a9; /* secondary text */
+
+  --fade-to: var(--bg); /* colour the cinematic bottom fade melts into */
+  --gutter: clamp(1rem, 4.5vw, 3.5rem);
+  --nav-h: 4.5rem;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-cinematic: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-navy-900: var(--navy-900);
+  --color-navy-800: var(--navy-800);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), "Iowan Old Style", Georgia, serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --ease-out-soft: var(--ease-out);
+  --radius-card: var(--radius-lg);
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.35);
+    color: var(--text);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  section[id] {
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+  }
+  /* Sections receive programmatic focus after anchor navigation; no ring around a whole section. */
+  section[tabindex="-1"]:focus,
+  main:focus {
+    outline: none;
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+@layer components {
+  /* ───────────────────────── Layout ───────────────────────── */
+  .container-x {
+    width: 100%;
+    max-width: calc(1360px + var(--gutter) * 2);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .section-y {
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Below-the-fold sections skip layout and paint until they approach the viewport,
+     which makes the first render much faster. Turned off before anchor scrolling. */
+  .cv {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1100px;
+  }
+  html.cv-off .cv {
+    content-visibility: visible;
+  }
+
+  /* ───────────────────────── Typography ───────────────────────── */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.71875rem; /* 11.5px */
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .display-hero {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2.35rem, 1.3rem + 4.1vw, 5.4rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    text-wrap: balance;
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(2rem, 1.25rem + 2.9vw, 4rem);
+    line-height: 1.06;
+    letter-spacing: -0.028em;
+    color: var(--text);
+    text-wrap: balance;
+  }
+
+  .display-md {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.022em;
+    color: var(--text);
+    text-wrap: balance;
+  }
+
+  .title-sm {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .body-lg {
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .body {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  /* Instrument Serif italic accent words inside headings. */
+  .accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    padding-right: 0.06em;
+    background: linear-gradient(100deg, var(--text) 10%, var(--accent-soft) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "calt" 0;
+  }
+
+  /* Visible marker for content that still needs your input. */
+  .placeholder-mark {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    font-style: normal;
+    color: #fcd9a0;
+    background: rgba(252, 217, 160, 0.08);
+    border: 1px dashed rgba(252, 217, 160, 0.45);
+    border-radius: 6px;
+    padding: 0.05em 0.4em;
+    -webkit-text-fill-color: #fcd9a0;
+  }
+
+  /* ───────────────────────── Buttons ───────────────────────── */
+  .pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.65rem 1.35rem;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      transform 0.45s var(--ease-out),
+      opacity 0.3s ease,
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+    will-change: transform;
+  }
+  .pill:hover {
+    transform: translateY(-2px);
+  }
+  .pill:active {
+    transform: translateY(0);
+  }
+  .pill-white {
+    background: var(--text);
+    color: #05070d;
+  }
+  .pill-white:hover {
+    background: #ffffff;
+  }
+  .pill-ghost {
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    background: rgba(15, 27, 61, 0.25);
+  }
+  .pill-ghost:hover {
+    border-color: rgba(147, 197, 253, 0.45);
+    color: var(--accent-soft);
+  }
+  .pill-sm {
+    min-height: 36px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: color 0.3s ease;
+  }
+  .link-arrow .arrow {
+    transition: transform 0.45s var(--ease-out);
+  }
+  .link-arrow:hover {
+    color: var(--accent-soft);
+  }
+  .link-arrow:hover .arrow {
+    transform: translateX(4px);
+  }
+
+  /* ───────────────────────── Surfaces ───────────────────────── */
+  .card {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(15, 27, 61, 0.38), rgba(10, 17, 40, 0.22));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  /* Faint blue border glow on hover; animated via opacity only. */
+  .glow-hover::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid rgba(147, 197, 253, 0.28);
+    box-shadow:
+      0 0 0 1px rgba(59, 130, 246, 0.08),
+      0 20px 60px -20px rgba(59, 130, 246, 0.35),
+      inset 0 0 40px -20px rgba(59, 130, 246, 0.35);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .glow-hover:hover::after,
+  .glow-hover:focus-within::after {
+    opacity: 1;
+  }
+
+  .hairline-x {
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Soft navy/blue radial glows that sit behind visual areas. */
+  .glow-blue {
+    pointer-events: none;
+    position: absolute;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, rgba(59, 130, 246, 0.22), rgba(59, 130, 246, 0.06) 55%, transparent 100%);
+  }
+  .glow-navy {
+    pointer-events: none;
+    position: absolute;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, rgba(30, 64, 175, 0.35), rgba(15, 27, 61, 0.15) 60%, transparent 100%);
+  }
+
+  /* Faint light rays rising from the bottom of visual panels (like the reference). */
+  .rays {
+    pointer-events: none;
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 70%;
+    background:
+      radial-gradient(60% 55% at 50% 100%, rgba(59, 130, 246, 0.28), transparent 70%),
+      repeating-conic-gradient(from 270deg at 50% 100%, rgba(147, 197, 253, 0.07) 0deg 0.6deg, transparent 0.6deg 7deg);
+    -webkit-mask-image: radial-gradient(70% 90% at 50% 100%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(70% 90% at 50% 100%, #000 20%, transparent 75%);
+  }
+
+  /* ───────────────────────── Signature image treatment ───────────────────────── */
+  .cinematic {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow:
+      var(--shadow-cinematic),
+      0 30px 120px -40px rgba(37, 99, 235, 0.35);
+    background: var(--navy-900);
+    transform: translateZ(0);
+  }
+  /* Subtle dark vignette so text on images always reads. */
+  .cinematic::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(5, 7, 13, 0.55) 100%);
+  }
+  /* Bottom fade: transparent → page background over the bottom ~35%. */
+  .cinematic::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 38%;
+    z-index: 3;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--fade-to) 55%, transparent) 55%,
+      var(--fade-to) 100%
+    );
+  }
+  .cinematic-content {
+    position: relative;
+    z-index: 4;
+  }
+
+  /* ───────────────────────── Grain overlay ───────────────────────── */
+  .grain {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ───────────────────────── Marquee ───────────────────────── */
+  .marquee {
+    --marquee-duration: 48s;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-duration) linear infinite;
+    will-change: transform;
+  }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* ───────────────────────── Keyframes ───────────────────────── */
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes rise {
+    from {
+      transform: translate3d(0, 105%, 0);
+      opacity: 0;
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      transform: translate3d(0, 18px, 0);
+      opacity: 0;
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      transform: scale(1.08);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes page-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -8px, 0);
+    }
+  }
+
+  @keyframes travel-x {
+    from {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    to {
+      transform: translate3d(var(--travel, 100px), 0, 0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes travel-y {
+    from {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    to {
+      transform: translate3d(0, var(--travel, 60px), 0);
+      opacity: 0;
+    }
+  }
+
+  /* A 100%-wide/tall carrier slides across its connector; the dot rides its leading edge. */
+  @keyframes sweep-x {
+    0% {
+      transform: translate3d(-100%, 0, 0);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+  }
+  @keyframes sweep-x-rev {
+    0% {
+      transform: translate3d(100%, 0, 0);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+  }
+  @keyframes sweep-y {
+    0% {
+      transform: translate3d(0, -100%, 0);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+  }
+  @keyframes sweep-y-rev {
+    0% {
+      transform: translate3d(0, 100%, 0);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  /* Above-the-fold entrance animations (pure CSS so they never wait for JS). */
+  .anim-rise {
+    display: inline-block;
+    animation: rise 0.95s var(--ease-out) both;
+  }
+  .anim-fade-up {
+    animation: fade-up 0.85s var(--ease-out) both;
+  }
+  .anim-scale-in {
+    animation: scale-in 1.2s var(--ease-out) both;
+  }
+  .page-enter {
+    animation: page-in 0.7s ease both;
+  }
+  .anim-float {
+    animation: float 9s ease-in-out infinite;
+  }
+
+  .word-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  /* Italic accent words keep room for their overhang without pushing punctuation away. */
+  .accent + span {
+    margin-left: -0.06em;
+  }
+
+  /* ───────────────────────── Code windows ───────────────────────── */
+  .code-kw {
+    color: #93c5fd;
+  }
+  .code-fn {
+    color: #b4befe;
+  }
+  .code-str {
+    color: #e6c38f;
+  }
+  .code-num {
+    color: #f5b38a;
+  }
+  .code-com {
+    color: #6b7590;
+    font-style: italic;
+  }
+  .code-punc {
+    color: #8b94a9;
+  }
+
+  /* ───────────────────────── Misc ───────────────────────── */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  dialog::backdrop {
+    background: rgba(3, 5, 10, 0.86);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* ───────────────────────── Reduced motion ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+  .anim-float {
+    animation: none !important;
+  }
+}
